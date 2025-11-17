@@ -1,5 +1,6 @@
 package es.rtur.pruebas.recipes.infrastructure.rest;
 
+/* TEMPORALMENTE COMENTADO - Será reemplazado con las nuevas entidades (RecetaEntity, etc.)
 import es.rtur.pruebas.recipes.application.dto.RecipeDTO;
 import es.rtur.pruebas.recipes.application.usecase.CreateRecipeUseCase;
 import es.rtur.pruebas.recipes.application.usecase.GetRecipeUseCase;
@@ -55,3 +56,4 @@ public class RecipeResource {
                 .orElse(Response.status(Response.Status.NOT_FOUND).build());
     }
 }
+*/
