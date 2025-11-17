@@ -1,25 +1,4 @@
-package com.quarkus.recipes.infrastructure.rest;
+// Moved: implementation relocated to
+// `src/main/java/es/rtur/pruebas/recipes/infrastructure/rest/HealthResource.java`
+// This file is intentionally left as a stub to avoid duplication after refactor.
 
-import org.eclipse.microprofile.health.HealthCheck;
-import org.eclipse.microprofile.health.HealthCheckResponse;
-import org.eclipse.microprofile.health.Liveness;
-import org.eclipse.microprofile.health.Readiness;
-
-import jakarta.enterprise.context.ApplicationScoped;
-
-/**
- * Health check endpoints for the application
- */
-@ApplicationScoped
-public class HealthResource {
-
-    @Liveness
-    public HealthCheck livenessCheck() {
-        return () -> HealthCheckResponse.up("Recipes API is alive");
-    }
-
-    @Readiness
-    public HealthCheck readinessCheck() {
-        return () -> HealthCheckResponse.up("Recipes API is ready");
-    }
-}
