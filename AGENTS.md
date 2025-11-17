@@ -12,7 +12,17 @@
 
 ## 🎯 Visión General
 
-Este proyecto implementa un **monolito modular** con **Clean Architecture** en Quarkus, optimizado para compilación nativa desde el inicio. La arquitectura sigue el principio fundamental: **"Las dependencias apuntan hacia adentro"**.
+Este documento describe la arquitectura limpia (Clean Architecture)
+aplicada a un monolito modular desarrollado con **Quarkus** sobre **Java
+21**.\
+El diseño mantiene el principio de *dependencias hacia adentro*: el
+**Dominio** no depende de nada, la **Aplicación** depende del dominio y
+define la orquestación, y la **Infraestructura** provee las
+implementaciones técnicas sin alterar la lógica de negocio.
+
+El objetivo es lograr un backend **modular, altamente testeable,
+desacoplado del framework** y escalable.
+
 
 ### Objetivos Principales
 - ✅ Separación clara de responsabilidades por capas
@@ -55,6 +65,20 @@ Dependencias: Infrastructure → Application → Domain
 3. **Open/Closed Principle (OCP)**
    - Fácil agregar nuevas funcionalidades sin modificar código existente
    - Nuevos casos de uso se agregan sin tocar el dominio
+
+
+### Principios No Negociables
+
+1.  Dominio sin frameworks.
+2.  Use cases puros.
+3.  Errores tipados.
+4.  Puertos en application, adaptadores en infrastructure.
+5.  Entidades JPA ≠ Entidades dominio.
+6.  Controladores sin lógica.
+7.  Mappers explícitos.
+8.  Wiring explícito.
+9.  Testing por niveles.
+10. El dominio manda.
 
 ---
 
@@ -146,10 +170,10 @@ public class CreateRecipeUseCase {
 ```java
 // infrastructure/persistence/RecipeRepositoryImpl.java
 @ApplicationScoped
-public class RecipeRepositoryImpl implements RecipeRepository {
+public class RecipeRepositoryImpl implements RecipeRepository, PanacheRepository<RecipeEntity> {
     public Recipe save(Recipe recipe) {
         RecipeEntity entity = toEntity(recipe);
-        entity.persist();
+        this.persist(entity);
         return toDomain(entity);
     }
 }
@@ -214,6 +238,18 @@ mvn dependency:tree -pl domain
 # - jakarta.validation-api (scope: provided)
 # - junit (scope: test)
 ```
+### Extensiones comunes
+
+-   RESTEasy Reactive
+-   Hibernate ORM
+-   Flyway
+-   OpenAPI
+-   Health Check
+-   Scheduler
+
+### 5. Documentación asociada importante.
+
+* analisis a tener en cuenta: [aqui](doc/analisis-funcional.md)
 
 ---
 
