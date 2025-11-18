@@ -1,17 +1,30 @@
 package es.rtur.pruebas.recipes.infrastructure.persistence;
 
+import es.rtur.pruebas.recipes.domain.entity.Comentario;
+import es.rtur.pruebas.recipes.domain.repository.ComentarioRepository;
+import es.rtur.pruebas.recipes.domain.valueobject.ComentarioId;
+import es.rtur.pruebas.recipes.domain.valueobject.RecetaId;
+import es.rtur.pruebas.recipes.domain.valueobject.UsuarioId;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Repositorio Panache para ComentarioEntity.
+ * Implementa ComentarioRepository del dominio.
  * Proporciona operaciones CRUD y consultas personalizadas para comentarios.
  */
 @ApplicationScoped
-public class ComentarioRepositoryImpl implements PanacheRepository<ComentarioEntity> {
+public class ComentarioRepositoryImpl implements PanacheRepository<ComentarioEntity>, ComentarioRepository {
+
+    @PersistenceContext
+    EntityManager em;
 
     /**
      * Busca comentarios de una receta específica.
@@ -65,8 +78,8 @@ public class ComentarioRepositoryImpl implements PanacheRepository<ComentarioEnt
      * @return true si se actualizó, false si no existe
      */
     @Transactional
-    public boolean cambiarEstado(Integer idComentario, String nuevoEstado) {
-        ComentarioEntity comentario = findById(idComentario.longValue());
+    public boolean cambiarEstado(Long idComentario, String nuevoEstado) {
+        ComentarioEntity comentario = findById(idComentario);
         if (comentario != null) {
             comentario.estado = nuevoEstado;
             persist(comentario);
@@ -82,5 +95,95 @@ public class ComentarioRepositoryImpl implements PanacheRepository<ComentarioEnt
      */
     public List<ComentarioEntity> findRecientes(int limit) {
         return find("estado = 'activo' ORDER BY fCreacion DESC").page(0, limit).list();
+    }
+
+    // Domain Repository Implementation
+
+    @Override
+    @Transactional
+    public Comentario save(Comentario comentario) {
+        ComentarioEntity entity;
+        if (comentario.getId() == null) {
+            entity = toEntity(comentario);
+            persist(entity);
+        } else {
+            entity = findById(comentario.getId().getValue().longValue());
+            if (entity == null) {
+                entity = toEntity(comentario);
+                persist(entity);
+            } else {
+                updateEntity(entity, comentario);
+            }
+        }
+        return toDomain(entity);
+    }
+
+    @Override
+    public Optional<Comentario> findById(ComentarioId id) {
+        ComentarioEntity entity = findById(id.getValue().longValue());
+        return entity != null ? Optional.of(toDomain(entity)) : Optional.empty();
+    }
+
+    @Override
+    public List<Comentario> findByReceta(RecetaId idReceta) {
+        return findByReceta(idReceta.getValue()).stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Comentario> findByRecetaAndEstado(RecetaId idReceta, String estado) {
+        return list("receta.idReceta = ?1 AND estado = ?2 ORDER BY fCreacion DESC", idReceta.getValue(), estado).stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Comentario> findByAutor(UsuarioId idAutor) {
+        return findByAutor(idAutor.getValue()).stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(ComentarioId id) {
+        deleteById(id.getValue().longValue());
+    }
+
+    @Override
+    public boolean existsById(ComentarioId id) {
+        return count("idComentario", id.getValue()) > 0;
+    }
+
+    // Mappers
+
+    private Comentario toDomain(ComentarioEntity entity) {
+        return new Comentario(
+                ComentarioId.of(entity.idComentario),
+                RecetaId.of(entity.receta.idReceta),
+                UsuarioId.of(entity.autor.idUsuario),
+                entity.contenido,
+                entity.estado,
+                entity.fCreacion,
+                entity.fModificacion
+        );
+    }
+
+    private ComentarioEntity toEntity(Comentario domain) {
+        ComentarioEntity entity = new ComentarioEntity();
+        if (domain.getId() != null) {
+            entity.idComentario = domain.getId().getValue();
+        }
+        entity.receta = em.find(RecetaEntity.class, domain.getIdReceta().getValue());
+        entity.autor = em.find(UsuarioEntity.class, domain.getIdAutor().getValue());
+        entity.contenido = domain.getContenido();
+        entity.estado = domain.getEstado();
+        return entity;
+    }
+
+    private void updateEntity(ComentarioEntity entity, Comentario domain) {
+        entity.contenido = domain.getContenido();
+        entity.estado = domain.getEstado();
     }
 }

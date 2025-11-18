@@ -65,7 +65,7 @@ class IngredienteRepositoryImplTest {
         repository.persist(crearIngrediente("Tomate", "verdura"));
 
         // When
-        List<IngredienteEntity> carnes = repository.findByTipo("carne");
+        List<IngredienteEntity> carnes = repository.findEntitiesByTipo("carne");
 
         // Then
         assertEquals(2, carnes.size());

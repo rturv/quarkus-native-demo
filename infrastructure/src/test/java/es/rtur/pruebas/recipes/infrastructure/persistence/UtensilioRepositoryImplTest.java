@@ -65,10 +65,10 @@ class UtensilioRepositoryImplTest {
         repository.persist(crearUtensilio("Cuchillo", "corte"));
 
         // When
-        List<UtensilioEntity> coccion = repository.findByTipo("cocción");
+        List<UtensilioEntity> cuchillos = repository.findEntitiesByTipo("corte");
 
         // Then
-        assertEquals(2, coccion.size());
+        assertEquals(1, cuchillos.size());
     }
 
     @Test

@@ -1,17 +1,23 @@
 package es.rtur.pruebas.recipes.infrastructure.persistence;
 
+import es.rtur.pruebas.recipes.domain.entity.Ingrediente;
+import es.rtur.pruebas.recipes.domain.repository.IngredienteRepository;
+import es.rtur.pruebas.recipes.domain.valueobject.IngredienteId;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Repositorio Panache para IngredienteEntity.
+ * Implementa IngredienteRepository del dominio.
  * Proporciona operaciones CRUD y consultas personalizadas para ingredientes.
  */
 @ApplicationScoped
-public class IngredienteRepositoryImpl implements PanacheRepository<IngredienteEntity> {
+public class IngredienteRepositoryImpl implements PanacheRepository<IngredienteEntity>, IngredienteRepository {
 
     /**
      * Busca un ingrediente por su nombre exacto.
@@ -32,11 +38,11 @@ public class IngredienteRepositoryImpl implements PanacheRepository<IngredienteE
     }
 
     /**
-     * Busca ingredientes por tipo.
+     * Busca ingredientes por tipo (public method for JPA entities).
      * @param tipo Tipo del ingrediente (ej: verdura, carne, lácteo, etc.)
-     * @return Lista de ingredientes de ese tipo
+     * @return Lista de entidades IngredienteEntity de ese tipo
      */
-    public List<IngredienteEntity> findByTipo(String tipo) {
+    public List<IngredienteEntity> findEntitiesByTipo(String tipo) {
         return list("tipo", tipo);
     }
 
@@ -55,5 +61,91 @@ public class IngredienteRepositoryImpl implements PanacheRepository<IngredienteE
      */
     public boolean existsByNombre(String nombre) {
         return count("nombre", nombre) > 0;
+    }
+
+    // Domain Repository Implementation
+
+    @Override
+    @Transactional
+    public Ingrediente save(Ingrediente ingrediente) {
+        IngredienteEntity entity;
+        if (ingrediente.getId() == null) {
+            entity = toEntity(ingrediente);
+            persist(entity);
+        } else {
+            entity = PanacheRepository.super.findById(ingrediente.getId().getValue().longValue());
+            if (entity == null) {
+                entity = toEntity(ingrediente);
+                persist(entity);
+            } else {
+                updateEntity(entity, ingrediente);
+            }
+        }
+        return toDomain(entity);
+    }
+
+    @Override
+    public Optional<Ingrediente> findById(IngredienteId id) {
+        IngredienteEntity entity = PanacheRepository.super.findById(id.getValue().longValue());
+        return entity != null ? Optional.of(toDomain(entity)) : Optional.empty();
+    }
+
+    @Override
+    public List<Ingrediente> findAllIngredientes() {
+        return listAll().stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Ingrediente> findByTipo(String tipo) {
+        return findEntitiesByTipo(tipo).stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Ingrediente> findByNombreContaining(String nombre) {
+        return searchByNombre(nombre).stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(IngredienteId id) {
+        PanacheRepository.super.deleteById(id.getValue().longValue());
+    }
+
+    @Override
+    public boolean existsById(IngredienteId id) {
+        return count("idIngrediente", id.getValue()) > 0;
+    }
+
+    // Mappers
+
+    private Ingrediente toDomain(IngredienteEntity entity) {
+        return new Ingrediente(
+                IngredienteId.of(entity.idIngrediente),
+                entity.nombre,
+                entity.tipo,
+                entity.fCreacion,
+                entity.fModificacion
+        );
+    }
+
+    private IngredienteEntity toEntity(Ingrediente domain) {
+        IngredienteEntity entity = new IngredienteEntity();
+        if (domain.getId() != null) {
+            entity.idIngrediente = domain.getId().getValue();
+        }
+        entity.nombre = domain.getNombre();
+        entity.tipo = domain.getTipo();
+        return entity;
+    }
+
+    private void updateEntity(IngredienteEntity entity, Ingrediente domain) {
+        entity.nombre = domain.getNombre();
+        entity.tipo = domain.getTipo();
     }
 }

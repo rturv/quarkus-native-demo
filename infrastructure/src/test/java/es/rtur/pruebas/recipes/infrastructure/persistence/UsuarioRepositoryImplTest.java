@@ -69,7 +69,7 @@ class UsuarioRepositoryImplTest {
         repository.persist(usuario);
 
         // When
-        Optional<UsuarioEntity> found = repository.findByEmail("maria@test.com");
+        Optional<UsuarioEntity> found = repository.findEntityByEmail("maria@test.com");
 
         // Then
         assertTrue(found.isPresent());
@@ -80,7 +80,7 @@ class UsuarioRepositoryImplTest {
     @Transactional
     void testFindByEmailNoExiste() {
         // When
-        Optional<UsuarioEntity> found = repository.findByEmail("noexiste@test.com");
+        Optional<UsuarioEntity> found = repository.findEntityByEmail("noexiste@test.com");
 
         // Then
         assertFalse(found.isPresent());
@@ -103,8 +103,8 @@ class UsuarioRepositoryImplTest {
         repository.persist(inactivo);
 
         // When
-        List<UsuarioEntity> activos = repository.findByEstado("activo");
-        List<UsuarioEntity> inactivos = repository.findByEstado("inactivo");
+        List<UsuarioEntity> activos = repository.findEntitiesByEstado("activo");
+        List<UsuarioEntity> inactivos = repository.findEntitiesByEstado("inactivo");
 
         // Then
         assertEquals(2, activos.size());
@@ -168,7 +168,7 @@ class UsuarioRepositoryImplTest {
         repository.flush();
 
         // When
-        boolean resultado = repository.cambiarEstado(usuario.idUsuario, "inactivo");
+        boolean resultado = repository.cambiarEstado((long) usuario.idUsuario, "inactivo");
 
         // Then
         assertTrue(resultado);
@@ -182,7 +182,7 @@ class UsuarioRepositoryImplTest {
     @Transactional
     void testCambiarEstadoUsuarioNoExiste() {
         // When
-        boolean resultado = repository.cambiarEstado(99999, "inactivo");
+        boolean resultado = repository.cambiarEstado(99999L, "inactivo");
 
         // Then
         assertFalse(resultado);

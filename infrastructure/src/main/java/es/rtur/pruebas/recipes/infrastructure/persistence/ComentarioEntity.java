@@ -33,7 +33,7 @@ public class ComentarioEntity {
     @Column(name = "f_creacion", nullable = false, updatable = false)
     public LocalDateTime fCreacion;
 
-    @Column(name = "f_modificacion", nullable = false)
+    @Column(name = "f_modificacion", nullable = true)
     public LocalDateTime fModificacion;
 
     @PrePersist

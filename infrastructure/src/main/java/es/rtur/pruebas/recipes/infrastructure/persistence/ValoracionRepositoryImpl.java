@@ -1,5 +1,10 @@
 package es.rtur.pruebas.recipes.infrastructure.persistence;
 
+import es.rtur.pruebas.recipes.domain.entity.Valoracion;
+import es.rtur.pruebas.recipes.domain.repository.ValoracionRepository;
+import es.rtur.pruebas.recipes.domain.valueobject.ValoracionId;
+import es.rtur.pruebas.recipes.domain.valueobject.RecetaId;
+import es.rtur.pruebas.recipes.domain.valueobject.UsuarioId;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
@@ -10,14 +15,16 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Repositorio Panache para ValoracionEntity.
+ * Implementa ValoracionRepository del dominio.
  * Proporciona operaciones CRUD y consultas personalizadas para valoraciones (likes/dislikes).
  * Implementa RN-04: Un usuario solo puede dar un like/dislike por receta.
  */
 @ApplicationScoped
-public class ValoracionRepositoryImpl implements PanacheRepository<ValoracionEntity> {
+public class ValoracionRepositoryImpl implements PanacheRepository<ValoracionEntity>, ValoracionRepository {
 
     @PersistenceContext
     EntityManager em;
@@ -151,5 +158,103 @@ public class ValoracionRepositoryImpl implements PanacheRepository<ValoracionEnt
             Integer.class)
             .setMaxResults(limit)
             .getResultList();
+    }
+
+    // Domain Repository Implementation
+
+    @Override
+    @Transactional
+    public Valoracion save(Valoracion valoracion) {
+        ValoracionEntity entity;
+        if (valoracion.getId() == null) {
+            entity = toEntity(valoracion);
+            persist(entity);
+        } else {
+            entity = findById(valoracion.getId().getValue().longValue());
+            if (entity == null) {
+                entity = toEntity(valoracion);
+                persist(entity);
+            } else {
+                updateEntity(entity, valoracion);
+            }
+        }
+        return toDomain(entity);
+    }
+
+    @Override
+    public Optional<Valoracion> findById(ValoracionId id) {
+        ValoracionEntity entity = findById(id.getValue().longValue());
+        return entity != null ? Optional.of(toDomain(entity)) : Optional.empty();
+    }
+
+    @Override
+    public Optional<Valoracion> findByRecetaAndUsuario(RecetaId idReceta, UsuarioId idUsuario) {
+        return findActivaByRecetaAndUsuario(idReceta.getValue(), idUsuario.getValue())
+                .map(this::toDomain);
+    }
+
+    @Override
+    public List<Valoracion> findByReceta(RecetaId idReceta) {
+        return list("receta.idReceta", idReceta.getValue()).stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Valoracion> findActiveByReceta(RecetaId idReceta) {
+        return findActivasByReceta(idReceta.getValue()).stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public long countLikesByReceta(RecetaId idReceta) {
+        return countLikesByReceta(idReceta.getValue());
+    }
+
+    @Override
+    public long countDislikesByReceta(RecetaId idReceta) {
+        return countDislikesByReceta(idReceta.getValue());
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(ValoracionId id) {
+        deleteById(id.getValue().longValue());
+    }
+
+    @Override
+    public boolean existsById(ValoracionId id) {
+        return count("idValoracion", id.getValue()) > 0;
+    }
+
+    // Mappers
+
+    private Valoracion toDomain(ValoracionEntity entity) {
+        return new Valoracion(
+                ValoracionId.of(entity.idValoracion),
+                RecetaId.of(entity.receta.idReceta),
+                UsuarioId.of(entity.usuario.idUsuario),
+                entity.tipo,
+                entity.fCreacion,
+                entity.fEliminacion
+        );
+    }
+
+    private ValoracionEntity toEntity(Valoracion domain) {
+        ValoracionEntity entity = new ValoracionEntity();
+        if (domain.getId() != null) {
+            entity.idValoracion = domain.getId().getValue();
+        }
+        entity.receta = em.find(RecetaEntity.class, domain.getIdReceta().getValue());
+        entity.usuario = em.find(UsuarioEntity.class, domain.getIdUsuario().getValue());
+        entity.tipo = domain.getTipo();
+        entity.fEliminacion = domain.getFEliminacion();
+        return entity;
+    }
+
+    private void updateEntity(ValoracionEntity entity, Valoracion domain) {
+        entity.tipo = domain.getTipo();
+        entity.fEliminacion = domain.getFEliminacion();
     }
 }

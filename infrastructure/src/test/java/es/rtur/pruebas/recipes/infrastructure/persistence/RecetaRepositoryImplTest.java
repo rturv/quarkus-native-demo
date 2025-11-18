@@ -113,7 +113,7 @@ class RecetaRepositoryImplTest {
         recetaRepository.persist(crearReceta("Receta Difícil", "dificil", 120));
 
         // When
-        List<RecetaEntity> faciles = recetaRepository.findByDificultad("facil");
+        List<RecetaEntity> faciles = recetaRepository.findEntitiesByDificultad("facil");
 
         // Then
         assertEquals(2, faciles.size());
@@ -133,7 +133,7 @@ class RecetaRepositoryImplTest {
         recetaRepository.persist(principal);
 
         // When
-        List<RecetaEntity> postres = recetaRepository.findByCategoria("postre");
+        List<RecetaEntity> postres = recetaRepository.findEntitiesByCategoria("postre");
 
         // Then
         assertEquals(1, postres.size());
