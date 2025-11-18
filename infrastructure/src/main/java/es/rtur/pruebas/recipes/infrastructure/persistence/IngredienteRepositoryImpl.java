@@ -73,7 +73,7 @@ public class IngredienteRepositoryImpl implements PanacheRepository<IngredienteE
             entity = toEntity(ingrediente);
             persist(entity);
         } else {
-            entity = findById(ingrediente.getId().getValue().longValue());
+            entity = PanacheRepository.super.findById(ingrediente.getId().getValue().longValue());
             if (entity == null) {
                 entity = toEntity(ingrediente);
                 persist(entity);
@@ -86,12 +86,12 @@ public class IngredienteRepositoryImpl implements PanacheRepository<IngredienteE
 
     @Override
     public Optional<Ingrediente> findById(IngredienteId id) {
-        IngredienteEntity entity = findById(id.getValue().longValue());
+        IngredienteEntity entity = PanacheRepository.super.findById(id.getValue().longValue());
         return entity != null ? Optional.of(toDomain(entity)) : Optional.empty();
     }
 
     @Override
-    public List<Ingrediente> findAll() {
+    public List<Ingrediente> findAllIngredientes() {
         return listAll().stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
@@ -114,7 +114,7 @@ public class IngredienteRepositoryImpl implements PanacheRepository<IngredienteE
     @Override
     @Transactional
     public void deleteById(IngredienteId id) {
-        deleteById(id.getValue().longValue());
+        PanacheRepository.super.deleteById(id.getValue().longValue());
     }
 
     @Override

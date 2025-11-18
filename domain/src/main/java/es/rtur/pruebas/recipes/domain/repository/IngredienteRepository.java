@@ -24,8 +24,9 @@ public interface IngredienteRepository {
 
     /**
      * Finds all ingredientes.
+     * Note: Named findAllIngredientes() to avoid conflict with Panache's findAll()
      */
-    List<Ingrediente> findAll();
+    List<Ingrediente> findAllIngredientes();
 
     /**
      * Finds ingredientes by type.

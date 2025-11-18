@@ -27,7 +27,7 @@ public class ListIngredientesUseCase {
      * @return List of IngredienteDTO
      */
     public List<IngredienteDTO> execute() {
-        return ingredienteRepository.findAll().stream()
+        return ingredienteRepository.findAllIngredientes().stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }

@@ -24,8 +24,9 @@ public interface UtensilioRepository {
 
     /**
      * Finds all utensilios.
+     * Note: Named findAllUtensilios() to avoid conflict with Panache's findAll()
      */
-    List<Utensilio> findAll();
+    List<Utensilio> findAllUtensilios();
 
     /**
      * Finds utensilios by type.

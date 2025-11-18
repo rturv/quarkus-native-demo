@@ -159,7 +159,7 @@ public class RecetaRepositoryImpl implements PanacheRepository<RecetaEntity>, Re
             persist(entity);
         } else {
             // Update existing
-            entity = findById(receta.getId().getValue().longValue());
+            entity = PanacheRepository.super.findById(receta.getId().getValue().longValue());
             if (entity == null) {
                 entity = toEntity(receta);
                 persist(entity);
@@ -172,12 +172,12 @@ public class RecetaRepositoryImpl implements PanacheRepository<RecetaEntity>, Re
 
     @Override
     public Optional<Receta> findById(RecetaId id) {
-        RecetaEntity entity = findById(id.getValue().longValue());
+        RecetaEntity entity = PanacheRepository.super.findById(id.getValue().longValue());
         return entity != null ? Optional.of(toDomain(entity)) : Optional.empty();
     }
 
     @Override
-    public List<Receta> findAll() {
+    public List<Receta> findAllRecetas() {
         return listAll().stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
@@ -214,7 +214,7 @@ public class RecetaRepositoryImpl implements PanacheRepository<RecetaEntity>, Re
     @Override
     @Transactional
     public void deleteById(RecetaId id) {
-        deleteById(id.getValue().longValue());
+        PanacheRepository.super.deleteById(id.getValue().longValue());
     }
 
     @Override

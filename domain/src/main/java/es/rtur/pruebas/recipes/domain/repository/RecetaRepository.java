@@ -28,8 +28,9 @@ public interface RecetaRepository {
     /**
      * Finds all recetas.
      * RF-02: List all recipes.
+     * Note: Named findAllRecetas() to avoid conflict with Panache's findAll()
      */
-    List<Receta> findAll();
+    List<Receta> findAllRecetas();
 
     /**
      * Finds recetas by author.

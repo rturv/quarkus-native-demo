@@ -73,7 +73,7 @@ public class UtensilioRepositoryImpl implements PanacheRepository<UtensilioEntit
             entity = toEntity(utensilio);
             persist(entity);
         } else {
-            entity = findById(utensilio.getId().getValue().longValue());
+            entity = PanacheRepository.super.findById(utensilio.getId().getValue().longValue());
             if (entity == null) {
                 entity = toEntity(utensilio);
                 persist(entity);
@@ -86,12 +86,12 @@ public class UtensilioRepositoryImpl implements PanacheRepository<UtensilioEntit
 
     @Override
     public Optional<Utensilio> findById(UtensilioId id) {
-        UtensilioEntity entity = findById(id.getValue().longValue());
+        UtensilioEntity entity = PanacheRepository.super.findById(id.getValue().longValue());
         return entity != null ? Optional.of(toDomain(entity)) : Optional.empty();
     }
 
     @Override
-    public List<Utensilio> findAll() {
+    public List<Utensilio> findAllUtensilios() {
         return listAll().stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
@@ -114,7 +114,7 @@ public class UtensilioRepositoryImpl implements PanacheRepository<UtensilioEntit
     @Override
     @Transactional
     public void deleteById(UtensilioId id) {
-        deleteById(id.getValue().longValue());
+        PanacheRepository.super.deleteById(id.getValue().longValue());
     }
 
     @Override

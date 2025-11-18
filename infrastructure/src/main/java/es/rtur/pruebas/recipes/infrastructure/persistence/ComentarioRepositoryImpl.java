@@ -79,7 +79,7 @@ public class ComentarioRepositoryImpl implements PanacheRepository<ComentarioEnt
      */
     @Transactional
     public boolean cambiarEstado(Integer idComentario, String nuevoEstado) {
-        ComentarioEntity comentario = findById(idComentario.longValue());
+        ComentarioEntity comentario = PanacheRepository.super.findById(idComentario.longValue());
         if (comentario != null) {
             comentario.estado = nuevoEstado;
             persist(comentario);
@@ -107,7 +107,7 @@ public class ComentarioRepositoryImpl implements PanacheRepository<ComentarioEnt
             entity = toEntity(comentario);
             persist(entity);
         } else {
-            entity = findById(comentario.getId().getValue().longValue());
+            entity = PanacheRepository.super.findById(comentario.getId().getValue().longValue());
             if (entity == null) {
                 entity = toEntity(comentario);
                 persist(entity);
@@ -120,7 +120,7 @@ public class ComentarioRepositoryImpl implements PanacheRepository<ComentarioEnt
 
     @Override
     public Optional<Comentario> findById(ComentarioId id) {
-        ComentarioEntity entity = findById(id.getValue().longValue());
+        ComentarioEntity entity = PanacheRepository.super.findById(id.getValue().longValue());
         return entity != null ? Optional.of(toDomain(entity)) : Optional.empty();
     }
 
@@ -148,7 +148,7 @@ public class ComentarioRepositoryImpl implements PanacheRepository<ComentarioEnt
     @Override
     @Transactional
     public void deleteById(ComentarioId id) {
-        deleteById(id.getValue().longValue());
+        PanacheRepository.super.deleteById(id.getValue().longValue());
     }
 
     @Override

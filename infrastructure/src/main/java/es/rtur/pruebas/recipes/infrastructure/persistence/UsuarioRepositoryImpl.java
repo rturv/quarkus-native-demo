@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  * Proporciona operaciones CRUD y consultas personalizadas para usuarios.
  */
 @ApplicationScoped
-public class UsuarioRepositoryImpl extends io.quarkus.hibernate.orm.panache.PanacheRepositoryBase<UsuarioEntity, Long> implements UsuarioRepository {
+public class UsuarioRepositoryImpl implements PanacheRepository<UsuarioEntity>, UsuarioRepository {
 
     /**
      * Busca un usuario por su email (internal method for JPA entities).
@@ -71,7 +71,7 @@ public class UsuarioRepositoryImpl extends io.quarkus.hibernate.orm.panache.Pana
      */
     @Transactional
     public boolean cambiarEstado(Integer idUsuario, String nuevoEstado) {
-        UsuarioEntity usuario = findById(idUsuario.longValue());
+        UsuarioEntity usuario = PanacheRepository.super.findById(idUsuario.longValue());
         if (usuario != null) {
             usuario.estado = nuevoEstado;
             persist(usuario);
@@ -92,7 +92,7 @@ public class UsuarioRepositoryImpl extends io.quarkus.hibernate.orm.panache.Pana
             persist(entity);
         } else {
             // Update existing
-            entity = findById(usuario.getId().getValue().longValue());
+            entity = PanacheRepository.super.findById(usuario.getId().getValue().longValue());
             if (entity == null) {
                 entity = toEntity(usuario);
                 persist(entity);
@@ -105,7 +105,7 @@ public class UsuarioRepositoryImpl extends io.quarkus.hibernate.orm.panache.Pana
 
     @Override
     public Optional<Usuario> findById(UsuarioId id) {
-        UsuarioEntity entity = findById(id.getValue().longValue());
+        UsuarioEntity entity = PanacheRepository.super.findById(id.getValue().longValue());
         return entity != null ? Optional.of(toDomain(entity)) : Optional.empty();
     }
 
@@ -115,16 +115,11 @@ public class UsuarioRepositoryImpl extends io.quarkus.hibernate.orm.panache.Pana
                 .map(this::toDomain);
     }
 
-    // Domain repository method - different from Panache's findAll()
-    public List<Usuario> findAllDomain() {
+    @Override
+    public List<Usuario> findAllUsuarios() {
         return listAll().stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Usuario> findAll() {
-        return findAllDomain();
     }
 
     @Override
@@ -137,7 +132,7 @@ public class UsuarioRepositoryImpl extends io.quarkus.hibernate.orm.panache.Pana
     @Override
     @Transactional
     public void deleteById(UsuarioId id) {
-        deleteById(id.getValue().longValue());
+        PanacheRepository.super.deleteById(id.getValue().longValue());
     }
 
     @Override
@@ -145,7 +140,7 @@ public class UsuarioRepositoryImpl extends io.quarkus.hibernate.orm.panache.Pana
         return count("idUsuario", id.getValue()) > 0;
     }
 
-    // Note: existsByEmail(String) is already defined above as a public method
+    // Note: existsByEmail(String) delegates to the existing public method above
 
     // Mappers
 

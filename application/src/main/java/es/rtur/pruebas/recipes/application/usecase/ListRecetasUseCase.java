@@ -27,7 +27,7 @@ public class ListRecetasUseCase {
      * @return List of RecetaDTO
      */
     public List<RecetaDTO> execute() {
-        return recetaRepository.findAll().stream()
+        return recetaRepository.findAllRecetas().stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }

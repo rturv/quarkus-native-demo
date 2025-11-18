@@ -32,8 +32,9 @@ public interface UsuarioRepository {
     /**
      * Finds all usuarios.
      * RF-06: Admin can manage users.
+     * Note: Named findAllUsuarios() to avoid conflict with Panache's findAll()
      */
-    List<Usuario> findAll();
+    List<Usuario> findAllUsuarios();
 
     /**
      * Finds active usuarios.

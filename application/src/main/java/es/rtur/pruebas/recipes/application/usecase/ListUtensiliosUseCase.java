@@ -27,7 +27,7 @@ public class ListUtensiliosUseCase {
      * @return List of UtensilioDTO
      */
     public List<UtensilioDTO> execute() {
-        return utensilioRepository.findAll().stream()
+        return utensilioRepository.findAllUtensilios().stream()
                 .map(this::mapToDTO)
                 .collect(Collectors.toList());
     }
