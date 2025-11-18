@@ -406,6 +406,13 @@ project-root/
     ./bootstrap/target/*-runner &
     sleep 5
     curl http://localhost:8080/health
+
+### Exploración adicional (Postman)
+
+- Se creó la carpeta `test/` en la raíz del repositorio con la colección `quarkus-recipes.postman_collection.json` preparada para:
+    - Registrar y loguear usuarios, incluyendo la renovación de JWT con `POST /api/auth/refresh`.
+    - Probar endpoints protegidos (`/api/recipes` GET/POST) usando el mismo token.
+- Importa la colección en Postman y define las variables `{{base_url}}` (por ejemplo `http://localhost:8080`) y `{{jwt_token}}` (reemplazado tras login o refresh). Refiérete a la sección correspondiente del `README.md` para detalles adicionales sobre el uso y pruebas automatizadas.
 ```
 
 ---

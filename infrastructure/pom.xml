@@ -63,6 +63,18 @@
             <version>${quarkus.platform.version}</version>
         </dependency>
 
+        <!-- Security + JWT -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-security</artifactId>
+            <version>${quarkus.platform.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-jwt</artifactId>
+            <version>${quarkus.platform.version}</version>
+        </dependency>
+
         <!-- OpenAPI/Swagger -->
         <dependency>
             <groupId>io.quarkus</groupId>
@@ -75,13 +87,24 @@
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-junit5</artifactId>
             <scope>test</scope>
-            <version>${quarkus.platform.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-test-security</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <scope>test</scope>
+            <version>5.12.0</version>
+        </dependency>
+
     </dependencies>
 
     <build>

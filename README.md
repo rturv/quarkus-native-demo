@@ -49,6 +49,7 @@ mvn quarkus:dev
 La aplicación estará disponible en:
 - API REST: http://localhost:8080/api/recipes
 - Swagger UI: http://localhost:8080/swagger-ui
+- Documentación OpenAPI (JSON): http://localhost:8080/q/openapi?format=json
 - Health Check: http://localhost:8080/health
 
 ### Probar la API
@@ -122,7 +123,19 @@ mvn test
 
 # Ejecutar tests de integración
 mvn verify
+
+# Verificar tests REST con mocks JWT y anotaciones Swagger
+mvn -pl infrastructure -am test
 ```
+
+La suite que reside en `infrastructure` ahora cubre el endpoint `/api/auth/refresh`, por lo que `mvn -pl infrastructure -am test` sirve para validar que la renovación de JWT responde `200` con un nuevo token válido y `401` cuando la autenticación falla.
+
+## 📬 Colección Postman
+
+- La colección `test/quarkus-recipes.postman_collection.json` contiene peticiones para `register`, `login`, `refresh` y operaciones sobre recetas protegidas con JWT.
+- Importa el archivo en Postman y define dos variables globales:
+   - `{{base_url}}` apunta al host donde tienes el servicio (por ejemplo `http://localhost:8080`).
+   - `{{jwt_token}}` se actualiza manualmente con el token devuelto en la respuesta de login o refresh antes de ejecutar endpoints que lo necesitan.
 
 ## 🔐 Configuración de Base de Datos
 
@@ -143,8 +156,25 @@ quarkus.datasource.password=yourpassword
 | POST | `/api/recipes` | Crear una receta |
 | GET | `/api/recipes` | Listar todas las recetas |
 | GET | `/api/recipes/{id}` | Obtener receta por ID |
+| POST | `/api/auth/register` | Registrar usuario y recibir JWT |
+| POST | `/api/auth/login` | Login y retorno de JWT simétrico |
+| POST | `/api/auth/refresh` | Refresca el JWT del usuario autenticado y entrega un nuevo token |
 | GET | `/health` | Health check |
 | GET | `/swagger-ui` | Documentación API |
+
+## 🗺️ Documentación REST y seguridad
+
+- Todos los `@Path` están documentados con anotaciones OpenAPI (`@Tag`, `@Operation`, `@APIResponse`) para que `swagger-ui` muestre respuesta tentativa, request body y códigos HTTP.
+- La documentación también expone los esquemas asociados (`UsuarioDTO`, `ComentarioDTO`, `LoginRequest`) y muestra claramente qué campos se consideran obligatorios o generados automáticamente (como `jwt`).
+- `AuthResource` describe la generación de tokens JWT simétricos mediante `JwtTokenService` mientras que `ComentariosResource` (y demás controladores) usan `AuthenticatedUser` para los endpoints protegidos.
+-- Los tests RestAssured en `infrastructure` simulan `JwtTokenService` con `QuarkusMock.installMockForType` y validan los contratos documentados sin depender de un proveedor externo.
+-- Los tests RestAssured en `infrastructure` simulan `JwtTokenService` con `QuarkusMock.installMockForType` y validan los contratos documentados sin depender de un proveedor externo.
+
+### Refresh token y seguridad
+
+- **Ruta:** `POST /api/auth/refresh`, protegida con `@RolesAllowed({"user","admin"})`, no requiere body pero sí headers `Content-Type: application/json` y `Authorization: Bearer {token}`.
+- **Respuesta esperada:** `200` con `UsuarioDTO` que incluye el nuevo `jwt` generado por `JwtTokenService` y `claveAcceso` siempre en `null`; `401` si el token actual está expirado o inválido.
+- **Pruebas:** `AuthResourceTest` valida el refresco exitoso y los casos no autorizados usando `QuarkusMock` y `@TestSecurity`, asegurando que la seguridad descrita en la documentación se mantiene.
 
 ## 🎯 Próximos Pasos (Vibecoding)
 

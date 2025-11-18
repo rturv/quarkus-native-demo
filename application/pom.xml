@@ -33,6 +33,14 @@
             <artifactId>quarkus-hibernate-validator</artifactId>
         </dependency>
 
+        <!-- OpenAPI annotations (solo tiempo de compilación) -->
+        <dependency>
+            <groupId>org.eclipse.microprofile.openapi</groupId>
+            <artifactId>microprofile-openapi-api</artifactId>
+            <version>3.1.1</version>
+            <scope>provided</scope>
+        </dependency>
+
         <!-- Test dependencies -->
         <dependency>
             <groupId>io.quarkus</groupId>
