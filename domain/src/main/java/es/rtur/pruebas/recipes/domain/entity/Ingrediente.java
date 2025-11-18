@@ -1,0 +1,91 @@
+package es.rtur.pruebas.recipes.domain.entity;
+
+import es.rtur.pruebas.recipes.domain.valueobject.IngredienteId;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+/**
+ * Domain entity representing an Ingrediente (Ingredient).
+ * Part of the catalog that can be managed by admins (RF-06).
+ */
+public class Ingrediente {
+
+    private final IngredienteId id;
+    
+    @NotBlank(message = "Ingredient name cannot be blank")
+    private String nombre;
+    
+    @NotBlank(message = "Ingredient type cannot be blank")
+    private String tipo;
+    
+    private final LocalDateTime fCreacion;
+    private LocalDateTime fModificacion;
+
+    /**
+     * Constructor for creating a new Ingrediente.
+     */
+    public Ingrediente(IngredienteId id, String nombre, String tipo) {
+        this.id = Objects.requireNonNull(id, "Ingrediente ID cannot be null");
+        this.nombre = Objects.requireNonNull(nombre, "Ingredient name cannot be null");
+        this.tipo = Objects.requireNonNull(tipo, "Ingredient type cannot be null");
+        this.fCreacion = LocalDateTime.now();
+        this.fModificacion = LocalDateTime.now();
+    }
+
+    /**
+     * Constructor for loading existing Ingrediente from repository.
+     */
+    public Ingrediente(IngredienteId id, String nombre, String tipo,
+                      LocalDateTime fCreacion, LocalDateTime fModificacion) {
+        this.id = id;
+        this.nombre = nombre;
+        this.tipo = tipo;
+        this.fCreacion = fCreacion;
+        this.fModificacion = fModificacion;
+    }
+
+    /**
+     * Updates ingredient details.
+     */
+    public void updateDetails(String nombre, String tipo) {
+        if (nombre != null && !nombre.isBlank()) {
+            this.nombre = nombre;
+        }
+        if (tipo != null && !tipo.isBlank()) {
+            this.tipo = tipo;
+        }
+        this.fModificacion = LocalDateTime.now();
+    }
+
+    // Getters
+    public IngredienteId getId() { return id; }
+    public String getNombre() { return nombre; }
+    public String getTipo() { return tipo; }
+    public LocalDateTime getFCreacion() { return fCreacion; }
+    public LocalDateTime getFModificacion() { return fModificacion; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Ingrediente that = (Ingrediente) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Ingrediente{" +
+                "id=" + id +
+                ", nombre='" + nombre + '\'' +
+                ", tipo='" + tipo + '\'' +
+                '}';
+    }
+}
