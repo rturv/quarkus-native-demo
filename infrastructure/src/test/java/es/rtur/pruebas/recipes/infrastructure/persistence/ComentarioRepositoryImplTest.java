@@ -150,7 +150,7 @@ class ComentarioRepositoryImplTest {
         comentarioRepository.flush();
 
         // When
-        boolean resultado = comentarioRepository.cambiarEstado(comentario.idComentario, "eliminado");
+        boolean resultado = comentarioRepository.cambiarEstado((long) comentario.idComentario, "eliminado");
 
         // Then
         assertTrue(resultado);

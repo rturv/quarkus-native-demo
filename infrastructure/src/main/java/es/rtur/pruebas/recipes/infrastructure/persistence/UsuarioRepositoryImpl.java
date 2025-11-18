@@ -20,20 +20,20 @@ import java.util.stream.Collectors;
 public class UsuarioRepositoryImpl implements PanacheRepository<UsuarioEntity>, UsuarioRepository {
 
     /**
-     * Busca un usuario por su email (internal method for JPA entities).
-     * @param email El email del usuario
+     * Busca un usuario por su email (public method for JPA entities).
+     * @param email Email del usuario
      * @return Optional con el usuario si existe
      */
-    private Optional<UsuarioEntity> findEntityByEmail(String email) {
+    public Optional<UsuarioEntity> findEntityByEmail(String email) {
         return find("email", email).firstResultOptional();
     }
 
     /**
-     * Busca usuarios por su estado (internal method for JPA entities).
+     * Busca usuarios por su estado (public method for JPA entities).
      * @param estado El estado del usuario (activo, inactivo, etc.)
-     * @return Lista de usuarios con ese estado
+     * @return Lista de entidades UsuarioEntity con ese estado
      */
-    private List<UsuarioEntity> findEntitiesByEstado(String estado) {
+    public List<UsuarioEntity> findEntitiesByEstado(String estado) {
         return list("estado", estado);
     }
 
@@ -70,8 +70,8 @@ public class UsuarioRepositoryImpl implements PanacheRepository<UsuarioEntity>, 
      * @return true si se actualizó, false si no existe
      */
     @Transactional
-    public boolean cambiarEstado(Integer idUsuario, String nuevoEstado) {
-        UsuarioEntity usuario = PanacheRepository.super.findById(idUsuario.longValue());
+    public boolean cambiarEstado(Long idUsuario, String nuevoEstado) {
+        UsuarioEntity usuario = findById(idUsuario);
         if (usuario != null) {
             usuario.estado = nuevoEstado;
             persist(usuario);
@@ -92,7 +92,7 @@ public class UsuarioRepositoryImpl implements PanacheRepository<UsuarioEntity>, 
             persist(entity);
         } else {
             // Update existing
-            entity = PanacheRepository.super.findById(usuario.getId().getValue().longValue());
+            entity = findById(usuario.getId().getValue().longValue());
             if (entity == null) {
                 entity = toEntity(usuario);
                 persist(entity);
@@ -105,7 +105,7 @@ public class UsuarioRepositoryImpl implements PanacheRepository<UsuarioEntity>, 
 
     @Override
     public Optional<Usuario> findById(UsuarioId id) {
-        UsuarioEntity entity = PanacheRepository.super.findById(id.getValue().longValue());
+        UsuarioEntity entity = findById(id.getValue().longValue());
         return entity != null ? Optional.of(toDomain(entity)) : Optional.empty();
     }
 
@@ -132,7 +132,7 @@ public class UsuarioRepositoryImpl implements PanacheRepository<UsuarioEntity>, 
     @Override
     @Transactional
     public void deleteById(UsuarioId id) {
-        PanacheRepository.super.deleteById(id.getValue().longValue());
+        deleteById(id.getValue().longValue());
     }
 
     @Override

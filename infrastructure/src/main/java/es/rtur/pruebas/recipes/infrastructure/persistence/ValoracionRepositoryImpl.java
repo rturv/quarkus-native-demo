@@ -112,7 +112,7 @@ public class ValoracionRepositoryImpl implements PanacheRepository<ValoracionEnt
      */
     @Transactional
     public boolean cambiarTipo(Long idValoracion, String nuevoTipo) {
-        ValoracionEntity valoracion = PanacheRepository.super.findById(idValoracion);
+        ValoracionEntity valoracion = findById(idValoracion);
         if (valoracion != null && valoracion.estaActiva()) {
             valoracion.tipo = nuevoTipo;
             persist(valoracion);
@@ -170,7 +170,7 @@ public class ValoracionRepositoryImpl implements PanacheRepository<ValoracionEnt
             entity = toEntity(valoracion);
             persist(entity);
         } else {
-            entity = PanacheRepository.super.findById(valoracion.getId().getValue().longValue());
+            entity = findById(valoracion.getId().getValue().longValue());
             if (entity == null) {
                 entity = toEntity(valoracion);
                 persist(entity);
@@ -183,7 +183,7 @@ public class ValoracionRepositoryImpl implements PanacheRepository<ValoracionEnt
 
     @Override
     public Optional<Valoracion> findById(ValoracionId id) {
-        ValoracionEntity entity = PanacheRepository.super.findById(id.getValue().longValue());
+        ValoracionEntity entity = findById(id.getValue().longValue());
         return entity != null ? Optional.of(toDomain(entity)) : Optional.empty();
     }
 
@@ -220,7 +220,7 @@ public class ValoracionRepositoryImpl implements PanacheRepository<ValoracionEnt
     @Override
     @Transactional
     public void deleteById(ValoracionId id) {
-        PanacheRepository.super.deleteById(id.getValue().longValue());
+        deleteById(id.getValue().longValue());
     }
 
     @Override

@@ -44,11 +44,11 @@ public class RecetaRepositoryImpl implements PanacheRepository<RecetaEntity>, Re
     }
 
     /**
-     * Busca recetas por dificultad (internal method for JPA entities).
+     * Busca recetas por dificultad (public method for JPA entities).
      * @param dificultad Nivel de dificultad
-     * @return Lista de recetas con esa dificultad
+     * @return Lista de entidades RecetaEntity con esa dificultad
      */
-    private List<RecetaEntity> findEntitiesByDificultad(String dificultad) {
+    public List<RecetaEntity> findEntitiesByDificultad(String dificultad) {
         return list("dificultad", dificultad);
     }
 
@@ -57,7 +57,7 @@ public class RecetaRepositoryImpl implements PanacheRepository<RecetaEntity>, Re
      * @param categoria Categoría de la receta
      * @return Lista de recetas de esa categoría
      */
-    private List<RecetaEntity> findEntitiesByCategoria(String categoria) {
+    public List<RecetaEntity> findEntitiesByCategoria(String categoria) {
         return list("categoria", categoria);
     }
 
