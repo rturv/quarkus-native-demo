@@ -1,18 +1,23 @@
 package es.rtur.pruebas.recipes.infrastructure.persistence;
 
+import es.rtur.pruebas.recipes.domain.entity.Usuario;
+import es.rtur.pruebas.recipes.domain.repository.UsuarioRepository;
+import es.rtur.pruebas.recipes.domain.valueobject.UsuarioId;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Repositorio Panache para UsuarioEntity.
+ * Implementa UsuarioRepository del dominio.
  * Proporciona operaciones CRUD y consultas personalizadas para usuarios.
  */
 @ApplicationScoped
-public class UsuarioRepositoryImpl implements PanacheRepository<UsuarioEntity> {
+public class UsuarioRepositoryImpl implements PanacheRepository<UsuarioEntity>, UsuarioRepository {
 
     /**
      * Busca un usuario por su email.
@@ -73,5 +78,106 @@ public class UsuarioRepositoryImpl implements PanacheRepository<UsuarioEntity> {
             return true;
         }
         return false;
+    }
+
+    // Domain Repository Implementation
+
+    @Override
+    @Transactional
+    public Usuario save(Usuario usuario) {
+        UsuarioEntity entity;
+        if (usuario.getId() == null) {
+            // New entity
+            entity = toEntity(usuario);
+            persist(entity);
+        } else {
+            // Update existing
+            entity = findById(usuario.getId().getValue().longValue());
+            if (entity == null) {
+                entity = toEntity(usuario);
+                persist(entity);
+            } else {
+                updateEntity(entity, usuario);
+            }
+        }
+        return toDomain(entity);
+    }
+
+    @Override
+    public Optional<Usuario> findById(UsuarioId id) {
+        UsuarioEntity entity = findById(id.getValue().longValue());
+        return entity != null ? Optional.of(toDomain(entity)) : Optional.empty();
+    }
+
+    @Override
+    public Optional<Usuario> findByEmail(String email) {
+        return find("email", email).firstResultOptional()
+                .map(this::toDomain);
+    }
+
+    @Override
+    public List<Usuario> findAll() {
+        return listAll().stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Usuario> findByEstado(String estado) {
+        return list("estado", estado).stream()
+                .map(this::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public void deleteById(UsuarioId id) {
+        deleteById(id.getValue().longValue());
+    }
+
+    @Override
+    public boolean existsById(UsuarioId id) {
+        return count("idUsuario", id.getValue()) > 0;
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return count("email", email) > 0;
+    }
+
+    // Mappers
+
+    private Usuario toDomain(UsuarioEntity entity) {
+        return new Usuario(
+                UsuarioId.of(entity.idUsuario),
+                entity.nombre,
+                entity.claveAcceso,
+                entity.email,
+                entity.esAdmin,
+                entity.estado,
+                entity.fCreacion,
+                entity.fModificacion
+        );
+    }
+
+    private UsuarioEntity toEntity(Usuario domain) {
+        UsuarioEntity entity = new UsuarioEntity();
+        if (domain.getId() != null) {
+            entity.idUsuario = domain.getId().getValue();
+        }
+        entity.nombre = domain.getNombre();
+        entity.claveAcceso = domain.getClaveAcceso();
+        entity.email = domain.getEmail();
+        entity.esAdmin = domain.getEsAdmin();
+        entity.estado = domain.getEstado();
+        return entity;
+    }
+
+    private void updateEntity(UsuarioEntity entity, Usuario domain) {
+        entity.nombre = domain.getNombre();
+        entity.claveAcceso = domain.getClaveAcceso();
+        entity.email = domain.getEmail();
+        entity.esAdmin = domain.getEsAdmin();
+        entity.estado = domain.getEstado();
     }
 }
