@@ -32,10 +32,10 @@ public class Comentario {
     private LocalDateTime fModificacion;
 
     /**
-     * Constructor for creating a new Comentario.
+     * Constructor for creating a new Comentario (ID may be null for new entities before persistence).
      */
     public Comentario(ComentarioId id, RecetaId idReceta, UsuarioId idAutor, String contenido) {
-        this.id = Objects.requireNonNull(id, "Comentario ID cannot be null");
+        this.id = id; // Allow null for new entities before persistence
         this.idReceta = Objects.requireNonNull(idReceta, "Recipe ID cannot be null");
         this.idAutor = Objects.requireNonNull(idAutor, "Author ID cannot be null");
         this.contenido = Objects.requireNonNull(contenido, "Comment content cannot be null");

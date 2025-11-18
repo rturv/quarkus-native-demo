@@ -30,10 +30,10 @@ public class Valoracion {
     private LocalDateTime fEliminacion;
 
     /**
-     * Constructor for creating a new Valoracion.
+     * Constructor for creating a new Valoracion (ID may be null for new entities before persistence).
      */
     public Valoracion(ValoracionId id, RecetaId idReceta, UsuarioId idUsuario, String tipo) {
-        this.id = Objects.requireNonNull(id, "Valoracion ID cannot be null");
+        this.id = id; // Allow null for new entities before persistence
         this.idReceta = Objects.requireNonNull(idReceta, "Recipe ID cannot be null");
         this.idUsuario = Objects.requireNonNull(idUsuario, "User ID cannot be null");
         validateTipo(tipo);

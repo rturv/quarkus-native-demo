@@ -39,11 +39,11 @@ public class Receta {
     private LocalDateTime fModificacion;
 
     /**
-     * Constructor for creating a new Receta.
+     * Constructor for creating a new Receta (ID may be null for new entities before persistence).
      */
     public Receta(RecetaId id, String nombre, Integer tiempo, Integer comensales,
                   String dificultad, String preparacion, String categoria, UsuarioId idAutor) {
-        this.id = Objects.requireNonNull(id, "Receta ID cannot be null");
+        this.id = id; // Allow null for new entities before persistence
         this.nombre = Objects.requireNonNull(nombre, "Recipe name cannot be null");
         this.tiempo = tiempo;
         this.comensales = comensales;

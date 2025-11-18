@@ -36,10 +36,10 @@ public class Usuario {
     private String estado;
 
     /**
-     * Constructor for creating a new Usuario.
+     * Constructor for creating a new Usuario (ID may be null for new entities before persistence).
      */
     public Usuario(UsuarioId id, String nombre, String claveAcceso, String email, Boolean esAdmin) {
-        this.id = Objects.requireNonNull(id, "Usuario ID cannot be null");
+        this.id = id; // Allow null for new entities before persistence
         this.nombre = Objects.requireNonNull(nombre, "Name cannot be null");
         this.claveAcceso = Objects.requireNonNull(claveAcceso, "Password cannot be null");
         this.email = Objects.requireNonNull(email, "Email cannot be null");

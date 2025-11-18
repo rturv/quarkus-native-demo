@@ -25,10 +25,10 @@ public class Ingrediente {
     private LocalDateTime fModificacion;
 
     /**
-     * Constructor for creating a new Ingrediente.
+     * Constructor for creating a new Ingrediente (ID may be null for new entities before persistence).
      */
     public Ingrediente(IngredienteId id, String nombre, String tipo) {
-        this.id = Objects.requireNonNull(id, "Ingrediente ID cannot be null");
+        this.id = id; // Allow null for new entities before persistence
         this.nombre = Objects.requireNonNull(nombre, "Ingredient name cannot be null");
         this.tipo = Objects.requireNonNull(tipo, "Ingredient type cannot be null");
         this.fCreacion = LocalDateTime.now();

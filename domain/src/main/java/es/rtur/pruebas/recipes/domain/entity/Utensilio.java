@@ -24,10 +24,10 @@ public class Utensilio {
     private LocalDateTime fModificacion;
 
     /**
-     * Constructor for creating a new Utensilio.
+     * Constructor for creating a new Utensilio (ID may be null for new entities before persistence).
      */
     public Utensilio(UtensilioId id, String nombre, String tipo) {
-        this.id = Objects.requireNonNull(id, "Utensilio ID cannot be null");
+        this.id = id; // Allow null for new entities before persistence
         this.nombre = Objects.requireNonNull(nombre, "Utensil name cannot be null");
         this.tipo = Objects.requireNonNull(tipo, "Utensil type cannot be null");
         this.fCreacion = LocalDateTime.now();
