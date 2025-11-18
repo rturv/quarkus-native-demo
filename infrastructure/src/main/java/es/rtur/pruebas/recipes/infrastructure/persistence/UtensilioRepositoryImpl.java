@@ -38,11 +38,11 @@ public class UtensilioRepositoryImpl implements PanacheRepository<UtensilioEntit
     }
 
     /**
-     * Busca utensilios por tipo.
+     * Busca utensilios por tipo (internal method for JPA entities).
      * @param tipo Tipo del utensilio (ej: corte, cocción, medición, etc.)
      * @return Lista de utensilios de ese tipo
      */
-    public List<UtensilioEntity> findByTipo(String tipo) {
+    private List<UtensilioEntity> findEntitiesByTipo(String tipo) {
         return list("tipo", tipo);
     }
 
@@ -99,7 +99,7 @@ public class UtensilioRepositoryImpl implements PanacheRepository<UtensilioEntit
 
     @Override
     public List<Utensilio> findByTipo(String tipo) {
-        return list("tipo", tipo).stream()
+        return findEntitiesByTipo(tipo).stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
     }

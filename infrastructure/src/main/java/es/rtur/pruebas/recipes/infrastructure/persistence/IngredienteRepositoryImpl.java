@@ -38,11 +38,11 @@ public class IngredienteRepositoryImpl implements PanacheRepository<IngredienteE
     }
 
     /**
-     * Busca ingredientes por tipo.
+     * Busca ingredientes por tipo (internal method for JPA entities).
      * @param tipo Tipo del ingrediente (ej: verdura, carne, lácteo, etc.)
      * @return Lista de ingredientes de ese tipo
      */
-    public List<IngredienteEntity> findByTipo(String tipo) {
+    private List<IngredienteEntity> findEntitiesByTipo(String tipo) {
         return list("tipo", tipo);
     }
 
@@ -99,7 +99,7 @@ public class IngredienteRepositoryImpl implements PanacheRepository<IngredienteE
 
     @Override
     public List<Ingrediente> findByTipo(String tipo) {
-        return list("tipo", tipo).stream()
+        return findEntitiesByTipo(tipo).stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
     }

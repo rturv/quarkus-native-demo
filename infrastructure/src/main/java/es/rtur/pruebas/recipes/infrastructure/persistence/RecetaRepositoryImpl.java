@@ -44,20 +44,20 @@ public class RecetaRepositoryImpl implements PanacheRepository<RecetaEntity>, Re
     }
 
     /**
-     * Busca recetas por dificultad.
+     * Busca recetas por dificultad (internal method for JPA entities).
      * @param dificultad Nivel de dificultad
      * @return Lista de recetas con esa dificultad
      */
-    public List<RecetaEntity> findByDificultad(String dificultad) {
+    private List<RecetaEntity> findEntitiesByDificultad(String dificultad) {
         return list("dificultad", dificultad);
     }
 
     /**
-     * Busca recetas por categoría.
+     * Busca recetas por categoría (internal method for JPA entities).
      * @param categoria Categoría de la receta
      * @return Lista de recetas de esa categoría
      */
-    public List<RecetaEntity> findByCategoria(String categoria) {
+    private List<RecetaEntity> findEntitiesByCategoria(String categoria) {
         return list("categoria", categoria);
     }
 
@@ -159,7 +159,7 @@ public class RecetaRepositoryImpl implements PanacheRepository<RecetaEntity>, Re
             persist(entity);
         } else {
             // Update existing
-            entity = findById(receta.getId().getValue());
+            entity = findById(receta.getId().getValue().longValue());
             if (entity == null) {
                 entity = toEntity(receta);
                 persist(entity);
@@ -172,7 +172,7 @@ public class RecetaRepositoryImpl implements PanacheRepository<RecetaEntity>, Re
 
     @Override
     public Optional<Receta> findById(RecetaId id) {
-        RecetaEntity entity = findById(id.getValue());
+        RecetaEntity entity = findById(id.getValue().longValue());
         return entity != null ? Optional.of(toDomain(entity)) : Optional.empty();
     }
 
@@ -199,14 +199,14 @@ public class RecetaRepositoryImpl implements PanacheRepository<RecetaEntity>, Re
 
     @Override
     public List<Receta> findByDificultad(String dificultad) {
-        return list("dificultad", dificultad).stream()
+        return findEntitiesByDificultad(dificultad).stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
     public List<Receta> findByCategoria(String categoria) {
-        return list("categoria", categoria).stream()
+        return findEntitiesByCategoria(categoria).stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
     }
@@ -214,7 +214,7 @@ public class RecetaRepositoryImpl implements PanacheRepository<RecetaEntity>, Re
     @Override
     @Transactional
     public void deleteById(RecetaId id) {
-        deleteById(id.getValue());
+        deleteById(id.getValue().longValue());
     }
 
     @Override

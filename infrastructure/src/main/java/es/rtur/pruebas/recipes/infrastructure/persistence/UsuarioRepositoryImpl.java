@@ -17,23 +17,23 @@ import java.util.stream.Collectors;
  * Proporciona operaciones CRUD y consultas personalizadas para usuarios.
  */
 @ApplicationScoped
-public class UsuarioRepositoryImpl implements PanacheRepository<UsuarioEntity>, UsuarioRepository {
+public class UsuarioRepositoryImpl extends io.quarkus.hibernate.orm.panache.PanacheRepositoryBase<UsuarioEntity, Long> implements UsuarioRepository {
 
     /**
-     * Busca un usuario por su email.
+     * Busca un usuario por su email (internal method for JPA entities).
      * @param email El email del usuario
      * @return Optional con el usuario si existe
      */
-    public Optional<UsuarioEntity> findByEmail(String email) {
+    private Optional<UsuarioEntity> findEntityByEmail(String email) {
         return find("email", email).firstResultOptional();
     }
 
     /**
-     * Busca usuarios por su estado.
+     * Busca usuarios por su estado (internal method for JPA entities).
      * @param estado El estado del usuario (activo, inactivo, etc.)
      * @return Lista de usuarios con ese estado
      */
-    public List<UsuarioEntity> findByEstado(String estado) {
+    private List<UsuarioEntity> findEntitiesByEstado(String estado) {
         return list("estado", estado);
     }
 
@@ -111,20 +111,25 @@ public class UsuarioRepositoryImpl implements PanacheRepository<UsuarioEntity>, 
 
     @Override
     public Optional<Usuario> findByEmail(String email) {
-        return find("email", email).firstResultOptional()
+        return findEntityByEmail(email)
                 .map(this::toDomain);
     }
 
-    @Override
-    public List<Usuario> findAll() {
+    // Domain repository method - different from Panache's findAll()
+    public List<Usuario> findAllDomain() {
         return listAll().stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
     }
 
     @Override
+    public List<Usuario> findAll() {
+        return findAllDomain();
+    }
+
+    @Override
     public List<Usuario> findByEstado(String estado) {
-        return list("estado", estado).stream()
+        return findEntitiesByEstado(estado).stream()
                 .map(this::toDomain)
                 .collect(Collectors.toList());
     }
@@ -140,10 +145,7 @@ public class UsuarioRepositoryImpl implements PanacheRepository<UsuarioEntity>, 
         return count("idUsuario", id.getValue()) > 0;
     }
 
-    @Override
-    public boolean existsByEmail(String email) {
-        return count("email", email) > 0;
-    }
+    // Note: existsByEmail(String) is already defined above as a public method
 
     // Mappers
 
