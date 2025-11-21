@@ -3,6 +3,10 @@ package es.rtur.pruebas.recipes.application.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import java.time.LocalDateTime;
@@ -11,6 +15,10 @@ import java.time.LocalDateTime;
  * Data Transfer Object for Usuario entity.
  * Used to transfer user data between layers.
  */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Schema(name = "Usuario", description = "Usuario registrado en el portal de recetas")
 public class UsuarioDTO {
 
@@ -37,52 +45,13 @@ public class UsuarioDTO {
 
     @Schema(description = "Indica si el usuario es administrador", example = "true")
     private Boolean esAdmin;
+    
     @Schema(description = "Estado actual de la cuenta", example = "activo")
     private String estado;
+    
     @Schema(description = "Fecha de creación", example = "2025-01-01T08:00:00")
     private LocalDateTime fCreacion;
+    
     @Schema(description = "Última modificación", example = "2025-01-10T08:00:00")
     private LocalDateTime fModificacion;
-
-    public UsuarioDTO() {
-    }
-
-    public UsuarioDTO(Integer id, String nombre, String email, Boolean esAdmin, String estado,
-                     LocalDateTime fCreacion, LocalDateTime fModificacion) {
-        this.id = id;
-        this.nombre = nombre;
-        this.email = email;
-        this.esAdmin = esAdmin;
-        this.estado = estado;
-        this.fCreacion = fCreacion;
-        this.fModificacion = fModificacion;
-    }
-
-    // Getters and Setters
-    public Integer getId() { return id; }
-    public void setId(Integer id) { this.id = id; }
-
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
-
-    public String getClaveAcceso() { return claveAcceso; }
-    public void setClaveAcceso(String claveAcceso) { this.claveAcceso = claveAcceso; }
-
-    public String getJwt() { return jwt; }
-    public void setJwt(String jwt) { this.jwt = jwt; }
-
-    public Boolean getEsAdmin() { return esAdmin; }
-    public void setEsAdmin(Boolean esAdmin) { this.esAdmin = esAdmin; }
-
-    public String getEstado() { return estado; }
-    public void setEstado(String estado) { this.estado = estado; }
-
-    public LocalDateTime getFCreacion() { return fCreacion; }
-    public void setFCreacion(LocalDateTime fCreacion) { this.fCreacion = fCreacion; }
-
-    public LocalDateTime getFModificacion() { return fModificacion; }
-    public void setFModificacion(LocalDateTime fModificacion) { this.fModificacion = fModificacion; }
 }

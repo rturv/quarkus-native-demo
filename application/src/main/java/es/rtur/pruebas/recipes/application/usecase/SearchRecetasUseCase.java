@@ -38,17 +38,17 @@ public class SearchRecetasUseCase {
     }
 
     private RecetaDTO mapToDTO(Receta receta) {
-        return new RecetaDTO(
-                receta.getId() != null ? receta.getId().getValue() : null,
-                receta.getNombre(),
-                receta.getTiempo(),
-                receta.getComensales(),
-                receta.getDificultad(),
-                receta.getPreparacion(),
-                receta.getCategoria(),
-                receta.getIdAutor().getValue(),
-                receta.getFCreacion(),
-                receta.getFModificacion()
-        );
+        return RecetaDTO.builder()
+                .id(receta.getId() != null ? receta.getId().getValue() : null)
+                .nombre(receta.getNombre())
+                .tiempo(receta.getTiempo())
+                .comensales(receta.getComensales())
+                .dificultad(receta.getDificultad())
+                .preparacion(receta.getPreparacion())
+                .categoria(receta.getCategoria())
+                .idAutor(receta.getIdAutor().getValue())
+                .fCreacion(receta.getFCreacion())
+                .fModificacion(receta.getFModificacion())
+                .build();
     }
 }

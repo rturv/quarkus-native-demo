@@ -2,7 +2,8 @@ package es.rtur.pruebas.recipes.domain.entity;
 
 import es.rtur.pruebas.recipes.domain.valueobject.IngredienteId;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -11,6 +12,8 @@ import java.util.Objects;
  * Domain entity representing an Ingrediente (Ingredient).
  * Part of the catalog that can be managed by admins (RF-06).
  */
+@Getter
+@ToString
 public class Ingrediente {
 
     private final IngredienteId id;
@@ -60,13 +63,6 @@ public class Ingrediente {
         this.fModificacion = LocalDateTime.now();
     }
 
-    // Getters
-    public IngredienteId getId() { return id; }
-    public String getNombre() { return nombre; }
-    public String getTipo() { return tipo; }
-    public LocalDateTime getFCreacion() { return fCreacion; }
-    public LocalDateTime getFModificacion() { return fModificacion; }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -78,14 +74,5 @@ public class Ingrediente {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Ingrediente{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", tipo='" + tipo + '\'' +
-                '}';
     }
 }

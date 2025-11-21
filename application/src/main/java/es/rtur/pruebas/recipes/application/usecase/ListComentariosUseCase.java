@@ -35,14 +35,14 @@ public class ListComentariosUseCase {
     }
 
     private ComentarioDTO mapToDTO(Comentario comentario) {
-        return new ComentarioDTO(
-                comentario.getId() != null ? comentario.getId().getValue() : null,
-                comentario.getIdReceta().getValue(),
-                comentario.getIdAutor().getValue(),
-                comentario.getContenido(),
-                comentario.getEstado(),
-                comentario.getFCreacion(),
-                comentario.getFModificacion()
-        );
+        return ComentarioDTO.builder()
+                .id(comentario.getId() != null ? comentario.getId().getValue() : null)
+                .idReceta(comentario.getIdReceta().getValue())
+                .idAutor(comentario.getIdAutor().getValue())
+                .contenido(comentario.getContenido())
+                .estado(comentario.getEstado())
+                .fCreacion(comentario.getFCreacion())
+                .fModificacion(comentario.getFModificacion())
+                .build();
     }
 }

@@ -78,13 +78,13 @@ public class CreateValoracionUseCase {
     }
 
     private ValoracionDTO mapToDTO(Valoracion valoracion) {
-        return new ValoracionDTO(
-                valoracion.getId() != null ? valoracion.getId().getValue() : null,
-                valoracion.getIdReceta().getValue(),
-                valoracion.getIdUsuario().getValue(),
-                valoracion.getTipo(),
-                valoracion.getFCreacion(),
-                valoracion.getFEliminacion()
-        );
+        return ValoracionDTO.builder()
+                .id(valoracion.getId() != null ? valoracion.getId().getValue() : null)
+                .idReceta(valoracion.getIdReceta().getValue())
+                .idUsuario(valoracion.getIdUsuario().getValue())
+                .tipo(valoracion.getTipo())
+                .fCreacion(valoracion.getFCreacion())
+                .fEliminacion(valoracion.getFEliminacion())
+                .build();
     }
 }

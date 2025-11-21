@@ -26,6 +26,9 @@
         <surefire-plugin.version>3.5.4</surefire-plugin.version>
         <failsafe-plugin.version>3.5.4</failsafe-plugin.version>
         
+        <!-- Lombok for boilerplate reduction -->
+        <lombok.version>1.18.30</lombok.version>
+        
         <!-- Skip tests by default for faster native builds -->
         <skipITs>true</skipITs>
         <quarkus.native.container-build>true</quarkus.native.container-build>
@@ -64,6 +67,13 @@
                 <groupId>es.rtur.pruebas.recipes</groupId>
                 <artifactId>infrastructure</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <!-- Lombok version management -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

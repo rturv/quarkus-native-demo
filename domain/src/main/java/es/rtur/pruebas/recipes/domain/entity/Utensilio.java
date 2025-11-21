@@ -2,6 +2,8 @@ package es.rtur.pruebas.recipes.domain.entity;
 
 import es.rtur.pruebas.recipes.domain.valueobject.UtensilioId;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -10,6 +12,8 @@ import java.util.Objects;
  * Domain entity representing a Utensilio (Utensil/Cooking tool).
  * Part of the catalog that can be managed by admins (RF-06).
  */
+@Getter
+@ToString
 public class Utensilio {
 
     private final UtensilioId id;
@@ -59,13 +63,6 @@ public class Utensilio {
         this.fModificacion = LocalDateTime.now();
     }
 
-    // Getters
-    public UtensilioId getId() { return id; }
-    public String getNombre() { return nombre; }
-    public String getTipo() { return tipo; }
-    public LocalDateTime getFCreacion() { return fCreacion; }
-    public LocalDateTime getFModificacion() { return fModificacion; }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -77,14 +74,5 @@ public class Utensilio {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Utensilio{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", tipo='" + tipo + '\'' +
-                '}';
     }
 }

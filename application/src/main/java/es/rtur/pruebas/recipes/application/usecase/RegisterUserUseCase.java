@@ -54,14 +54,14 @@ public class RegisterUserUseCase {
     }
 
     private UsuarioDTO mapToDTO(Usuario usuario) {
-        return new UsuarioDTO(
-                usuario.getId() != null ? usuario.getId().getValue() : null,
-                usuario.getNombre(),
-                usuario.getEmail(),
-                usuario.getEsAdmin(),
-                usuario.getEstado(),
-                usuario.getFCreacion(),
-                usuario.getFModificacion()
-        );
+        return UsuarioDTO.builder()
+                .id(usuario.getId() != null ? usuario.getId().getValue() : null)
+                .nombre(usuario.getNombre())
+                .email(usuario.getEmail())
+                .esAdmin(usuario.getEsAdmin())
+                .estado(usuario.getEstado())
+                .fCreacion(usuario.getFCreacion())
+                .fModificacion(usuario.getFModificacion())
+                .build();
     }
 }

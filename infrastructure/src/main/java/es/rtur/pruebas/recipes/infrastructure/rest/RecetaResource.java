@@ -44,7 +44,7 @@ import java.util.Map;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 @Tag(name = "Recetas", description = "Gestión de recetas, búsquedas y filtros")
-public class RecipeResource {
+public class RecetaResource {
 
     private final ListRecetasUseCase listRecetasUseCase;
     private final GetRecetaUseCase getRecetaUseCase;
@@ -56,7 +56,7 @@ public class RecipeResource {
     private final SecurityIdentity securityIdentity;
 
     @Inject
-    public RecipeResource(ListRecetasUseCase listRecetasUseCase,
+    public RecetaResource(ListRecetasUseCase listRecetasUseCase,
                           GetRecetaUseCase getRecetaUseCase,
                           SearchRecetasUseCase searchRecetasUseCase,
                           FilterRecetasUseCase filterRecetasUseCase,

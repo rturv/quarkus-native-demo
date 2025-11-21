@@ -5,6 +5,8 @@ import es.rtur.pruebas.recipes.domain.valueobject.RecetaId;
 import es.rtur.pruebas.recipes.domain.valueobject.UsuarioId;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -14,6 +16,8 @@ import java.util.Objects;
  * RF-03: Users can comment on recipes.
  * RN-08: Comments can only be created by logged-in users.
  */
+@Getter
+@ToString
 public class Comentario {
 
     private final ComentarioId id;
@@ -90,15 +94,6 @@ public class Comentario {
         return this.idAutor.equals(usuarioId);
     }
 
-    // Getters
-    public ComentarioId getId() { return id; }
-    public RecetaId getIdReceta() { return idReceta; }
-    public UsuarioId getIdAutor() { return idAutor; }
-    public String getContenido() { return contenido; }
-    public String getEstado() { return estado; }
-    public LocalDateTime getFCreacion() { return fCreacion; }
-    public LocalDateTime getFModificacion() { return fModificacion; }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -110,15 +105,5 @@ public class Comentario {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Comentario{" +
-                "id=" + id +
-                ", idReceta=" + idReceta +
-                ", idAutor=" + idAutor +
-                ", estado='" + estado + '\'' +
-                '}';
     }
 }

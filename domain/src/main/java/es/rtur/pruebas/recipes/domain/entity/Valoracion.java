@@ -4,6 +4,8 @@ import es.rtur.pruebas.recipes.domain.valueobject.ValoracionId;
 import es.rtur.pruebas.recipes.domain.valueobject.RecetaId;
 import es.rtur.pruebas.recipes.domain.valueobject.UsuarioId;
 import jakarta.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -13,6 +15,8 @@ import java.util.Objects;
  * RF-04: Users can rate recipes with likes/dislikes.
  * RN-04: A user can only give one like/dislike per recipe.
  */
+@Getter
+@ToString
 public class Valoracion {
 
     private final ValoracionId id;
@@ -100,14 +104,6 @@ public class Valoracion {
         return "dislike".equals(this.tipo);
     }
 
-    // Getters
-    public ValoracionId getId() { return id; }
-    public RecetaId getIdReceta() { return idReceta; }
-    public UsuarioId getIdUsuario() { return idUsuario; }
-    public String getTipo() { return tipo; }
-    public LocalDateTime getFCreacion() { return fCreacion; }
-    public LocalDateTime getFEliminacion() { return fEliminacion; }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -119,16 +115,5 @@ public class Valoracion {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Valoracion{" +
-                "id=" + id +
-                ", idReceta=" + idReceta +
-                ", idUsuario=" + idUsuario +
-                ", tipo='" + tipo + '\'' +
-                ", active=" + isActive() +
-                '}';
     }
 }

@@ -4,6 +4,8 @@ import es.rtur.pruebas.recipes.domain.valueobject.UsuarioId;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -13,6 +15,8 @@ import java.util.Objects;
  * Contains pure business logic without any framework dependencies.
  * RN-06: Field es_admin defines administration permissions.
  */
+@Getter
+@ToString
 public class Usuario {
 
     private final UsuarioId id;
@@ -133,16 +137,6 @@ public class Usuario {
         this.fModificacion = LocalDateTime.now();
     }
 
-    // Getters
-    public UsuarioId getId() { return id; }
-    public String getNombre() { return nombre; }
-    public String getClaveAcceso() { return claveAcceso; }
-    public String getEmail() { return email; }
-    public LocalDateTime getFCreacion() { return fCreacion; }
-    public LocalDateTime getFModificacion() { return fModificacion; }
-    public Boolean getEsAdmin() { return esAdmin; }
-    public String getEstado() { return estado; }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -154,16 +148,5 @@ public class Usuario {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Usuario{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", email='" + email + '\'' +
-                ", esAdmin=" + esAdmin +
-                ", estado='" + estado + '\'' +
-                '}';
     }
 }

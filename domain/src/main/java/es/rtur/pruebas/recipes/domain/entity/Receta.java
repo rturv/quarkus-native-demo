@@ -5,6 +5,9 @@ import es.rtur.pruebas.recipes.domain.valueobject.UsuarioId;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.ToString;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -15,6 +18,8 @@ import java.util.Objects;
  * RN-01: Only logged-in users can create, edit, or delete recipes.
  * RN-02: A user can only edit/delete their own recipes (except admin).
  */
+@Getter
+@ToString
 public class Receta {
 
     private final RecetaId id;
@@ -130,18 +135,6 @@ public class Receta {
         return isAdmin || isAuthor(usuarioId);
     }
 
-    // Getters
-    public RecetaId getId() { return id; }
-    public String getNombre() { return nombre; }
-    public Integer getTiempo() { return tiempo; }
-    public Integer getComensales() { return comensales; }
-    public String getDificultad() { return dificultad; }
-    public String getPreparacion() { return preparacion; }
-    public String getCategoria() { return categoria; }
-    public UsuarioId getIdAutor() { return idAutor; }
-    public LocalDateTime getFCreacion() { return fCreacion; }
-    public LocalDateTime getFModificacion() { return fModificacion; }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -153,16 +146,5 @@ public class Receta {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return "Receta{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", tiempo=" + tiempo +
-                ", dificultad='" + dificultad + '\'' +
-                ", categoria='" + categoria + '\'' +
-                '}';
     }
 }
