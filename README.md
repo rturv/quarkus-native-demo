@@ -79,17 +79,44 @@ curl http://localhost:8080/api/recipes/{id}
 Compilar a un binario nativo con GraalVM:
 
 ```bash
-# Usando Docker (recomendado)
-mvn package -Pnative -DskipTests
+# Opción 1: Script automatizado (RECOMENDADO)
+./build-native.sh              # Compilar + imagen
+./build-native.sh --compose    # Compilar + imagen + docker compose
+./build-native.sh --run        # Compilar + imagen + ejecutar contenedor
 
-# Ejecutar el binario nativo
-./bootstrap/target/bootstrap-1.0.0-SNAPSHOT-runner
+# Opción 2: Manual con Maven
+mvn clean package -Pnative -DskipTests -Dquarkus.native.container-build=true
+
+# Opción 3: Construir solo imagen (si binario ya existe)
+docker build -f Dockerfile.native -t quarkus-recipes:native .
 ```
 
-**Beneficios de Native:**
-- ⚡ Arranque ultra rápido (~0.1s vs ~3s JVM)
-- 💾 Menor consumo de memoria
-- 📦 Binario independiente (no requiere JVM)
+### 📊 Benchmarks Reales
+
+| Métrica | JDK | Native |
+|---------|-----|--------|
+| **Startup** | 10-15s | 2.851s ⚡ |
+| **Memory (idle)** | 200+ MB | ~44 MB 💾 |
+| **Docker image** | 323 MB | 282 MB 📦 |
+| **Binary** | JAR 80MB | ELF 123 MB |
+
+**Ejecutar imagen nativa:**
+
+```bash
+# Con docker compose (recomendado - incluye BD real)
+docker compose -f docker-compose.native.yml up -d
+
+# O manualmente
+docker run -d \
+  --name quarkus-native \
+  -p 8080:8080 \
+  -e QUARKUS_DATASOURCE_JDBC_URL="jdbc:postgresql://..." \
+  -e QUARKUS_DATASOURCE_USERNAME="user" \
+  -e QUARKUS_DATASOURCE_PASSWORD="pass" \
+  quarkus-recipes:native
+```
+
+**📖 Documentación completa:** [README.native.md](./README.native.md)
 
 ## 📝 Estructura del Proyecto
 

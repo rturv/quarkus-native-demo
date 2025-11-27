@@ -1,0 +1,65 @@
+# ============================================================================
+# Dockerfile.native - Build con GraalVM Native Image (sin GraalVM local)
+# ============================================================================
+# Etapa 1: Compilación nativa (SE HACE EN MÁQUINA LOCAL)
+# Etapa 2: Imagen runtime minimal (quarkus micro image)
+#
+# VENTAJA CLAVE: No requiere GraalVM en Docker
+# Compilación ocurre en tu máquina local con Docker (container-build=true)
+#
+# Resultado: Ejecutable nativo optimizado (startup <100ms, memoria mínima)
+# ============================================================================
+
+# ============================================================================
+# Etapa 1: Builder - Compilación local en máquina (no hace nada)
+# ============================================================================
+# Esta etapa NO se usa si ya compilaste localmente
+# Si quieres compilación 100% en Docker, usa container-build=true en pom.xml
+FROM quay.io/quarkus/ubi9-quarkus-micro-image:2.0 AS builder
+
+# Placeholder - la compilación se hace en tu máquina local
+WORKDIR /build
+
+# ============================================================================
+# Etapa 2: Imagen final - Quarkus Micro Image (recomendada por Quarkus)
+# ============================================================================
+# Basada en UBI Micro (9MB)
+# Contiene todas las librerías necesarias para ejecutables nativos
+# Usuario nonroot integrado (uid: 1001)
+FROM quay.io/quarkus/ubi9-quarkus-micro-image:2.0
+
+LABEL maintainer="RTUR <info@rtur.es>"
+LABEL description="Quarkus Recipes API - Native GraalVM (sin GraalVM local)"
+LABEL version="1.0.0"
+
+WORKDIR /work
+
+# Ajustar permisos (es importante para UBI micro)
+RUN chown 1001 /work && \
+    chmod "g+rwX" /work && \
+    chown 1001:root /work
+
+# Copiar ejecutable nativo compilado localmente
+# NOTA: Asume que ya compilaste: mvn clean package -Pnative -DskipTests -Dquarkus.native.container-build=true
+COPY bootstrap/target/*-runner /work/application
+
+# Asegurar que el binario tenga permisos correctos
+RUN chmod 755 /work/application
+
+# Usuario nonroot ya viene configurado en la imagen base
+USER 1001
+
+# Puerto por defecto
+EXPOSE 8080
+
+# Health check: Solo ejecutable disponible, verificar que inicia
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+    CMD /work/application --help > /dev/null 2>&1 || exit 1
+
+# Comando de inicio con configuración HTTP
+CMD ["./application", "-Dquarkus.http.host=0.0.0.0"]
+
+# Variables de entorno por defecto (opcional, se puede sobrescribir)
+ENV QUARKUS_HTTP_PORT=8080 \
+    QUARKUS_DATASOURCE_DB_KIND=postgresql \
+    QUARKUS_DATASOURCE_JDBC_URL=jdbc:postgresql://postgres:5432/recipes

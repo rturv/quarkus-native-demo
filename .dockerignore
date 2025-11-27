@@ -1,0 +1,30 @@
+# Build artifacts
+target/
+*.jar
+*.class
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Git
+.git
+.gitignore
+
+# Maven
+.m2/
+
+# Node (si aplica)
+node_modules/
+package-lock.json
+npm-debug.log
+
+# Docker
+Dockerfile*
+docker-compose*.yml
+.dockerignore
