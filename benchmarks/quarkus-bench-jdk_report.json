@@ -1,0 +1,17 @@
+{
+  "image": "quarkus-recipes:jdk",
+  "startup_time_s": 6.607,
+  "memory_idle_mb": 194.3,
+  "memory_loaded_mb": 302.8,
+  "load_test": {
+    "total_requests": 2010,
+    "errors": 9,
+    "total_time_sec": 14.297285556793213,
+    "throughput_rps": 140.58612678719064,
+    "avg_latency_ms": 119.08874630334958,
+    "p95_latency_ms": 156.22152090072632,
+    "p99_latency_ms": 1087.5433158874512,
+    "min_latency_ms": 52.97541618347168,
+    "max_latency_ms": 4656.940460205078
+  }
+}

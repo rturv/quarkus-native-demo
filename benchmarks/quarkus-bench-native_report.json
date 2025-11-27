@@ -1,0 +1,17 @@
+{
+  "image": "quarkus-recipes:native",
+  "startup_time_s": 3.047,
+  "memory_idle_mb": 53.13,
+  "memory_loaded_mb": 101.2,
+  "load_test": {
+    "total_requests": 2012,
+    "errors": 7,
+    "total_time_sec": 14.938123226165771,
+    "throughput_rps": 134.68894114327293,
+    "avg_latency_ms": 130.1706197484587,
+    "p95_latency_ms": 172.6195216178894,
+    "p99_latency_ms": 848.0824184417725,
+    "min_latency_ms": 54.8551082611084,
+    "max_latency_ms": 4590.565919876099
+  }
+}
